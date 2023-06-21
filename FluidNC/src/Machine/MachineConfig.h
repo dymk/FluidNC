@@ -19,7 +19,9 @@
 #include "../Stepping.h"
 #include "../Stepper.h"
 #include "../Config.h"
+#ifndef ENV_NATIVE
 #include "../OLED.h"
+#endif
 #include "Axes.h"
 #include "SPIBus.h"
 #include "I2CBus.h"
@@ -71,7 +73,9 @@ namespace Machine {
         Macros*               _macros         = nullptr;
         Start*                _start          = nullptr;
         Parking*              _parking        = nullptr;
+#ifndef ENV_NATIVE
         OLED*                 _oled           = nullptr;
+#endif
         Spindles::SpindleList _spindles;
 
         UartChannel* _uart_channels[MAX_N_UARTS] = { nullptr };

@@ -44,7 +44,8 @@ void InputFile::ack(Error status) {
         if (status != Error::GcodeUnsupportedCommand) {
             // Do not stop on unsupported commands because most senders do not
             // Stop the file job on other errors
-            _notifyf("File job error", "Error:%d in %s at line: %d", status, path(), getLineNumber());
+            FluidPath path = this->fpath();
+            _notifyf("File job error", "Error:%d in %s at line: %d", status, path.c_str(), getLineNumber());
             allChannels.kill(this);
             return;
         }
@@ -71,16 +72,22 @@ Channel* InputFile::pollLine(char* line) {
         }
             return &allChannels;
         case Error::Eof:
+        {
             _progress = "";
-            _notifyf("File job done", "%s file job succeeded", path());
-            log_msg(path() << " file job succeeded");
+            FluidPath path = this->fpath();
+            _notifyf("File job done", "%s file job succeeded", path.c_str());
+            log_msg(path.c_str() << " file job succeeded");
             allChannels.kill(this);
             return nullptr;
+        }
         default:
+        {
+            FluidPath path = this->fpath();
             _progress = "";
-            log_error(static_cast<int>(err) << " (" << errorString(err) << ") in " << path() << " at line " << getLineNumber());
+            log_error(static_cast<int>(err) << " (" << errorString(err) << ") in " << path.c_str() << " at line " << getLineNumber());
             allChannels.kill(this);
             return nullptr;
+        }
     }
 }
 

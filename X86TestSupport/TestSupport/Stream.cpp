@@ -330,3 +330,7 @@ String Stream::readStringUntil(char terminator) {
     }
     return ret;
 }
+
+void Stream::flush() {
+    /* Empty implementation for backward compatibility */
+}

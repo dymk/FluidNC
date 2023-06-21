@@ -64,7 +64,9 @@ namespace Machine {
 
         handler.section("user_outputs", _userOutputs);
 
+#ifndef ENV_NATIVE
         handler.section("oled", _oled);
+#endif
 
         Spindles::SpindleFactory::factory(handler, _spindles);
 

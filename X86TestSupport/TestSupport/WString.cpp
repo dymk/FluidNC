@@ -3,13 +3,13 @@
 #include <iomanip>
 #include <sstream>
 
+
 #pragma warning(disable : 4996)  // itoa
 
 std::string String::ValueToString(int value, int base) {
     char        buffer[100] = { 0 };
-    int         number_base = 10;
-    std::string output      = itoa(value, buffer, base);
-    return output;
+    snprintf(buffer, sizeof(buffer), "%d", value);
+    return buffer;
 }
 
 std::string String::DecToString(double value, int decimalPlaces) {

@@ -10,6 +10,7 @@
 #include <atomic>
 #include <sstream>
 #include <iomanip>
+#include <numeric>
 
 namespace Configuration {
     JsonGenerator::JsonGenerator(WebUI::JSONencoder& encoder) : _encoder(encoder) {
@@ -69,7 +70,7 @@ namespace Configuration {
     void JsonGenerator::item(const char* name, int& value, int32_t minValue, int32_t maxValue) {
         enter(name);
         char buf[32];
-        itoa(value, buf, 10);
+        snprintf(buf, sizeof(buf), "%d", value);
         _encoder.begin_webui(_currentPath, _currentPath, "I", buf, minValue, maxValue);
         _encoder.end_object();
         leave();
@@ -78,7 +79,7 @@ namespace Configuration {
     void JsonGenerator::item(const char* name, uint32_t& value, uint32_t minValue, uint32_t maxValue) {
         enter(name);
         char buf[32];
-        itoa(value, buf, 10);
+        snprintf(buf, sizeof(buf), "%d", value);
         _encoder.begin_webui(_currentPath, _currentPath, "I", buf, minValue, maxValue);
         _encoder.end_object();
         leave();

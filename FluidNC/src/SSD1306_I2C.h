@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "esp32-hal.h"
 #include <OLEDDisplay.h>
 #include "Machine/I2CBus.h"
 #include <algorithm>

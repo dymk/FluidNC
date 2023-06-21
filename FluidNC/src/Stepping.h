@@ -38,8 +38,7 @@ namespace Machine {
         // execution lead time there is for other processes to run.  The latency for a feedhold or other
         // override is roughly 10 ms times _segments.
 
-        size_t _segments = 12;
-
+        uint32_t _segments            = 12;
         uint32_t _idleMsecs           = 255;
         uint32_t _pulseUsecs          = 4;
         uint32_t _directionDelayUsecs = 0;

@@ -207,15 +207,18 @@ std::exception CreateException(const char* condition, const char* msg) {
 }
 
 #else
+#include <exception>
+#include <string>
+#include <sstream>
+#include <stdexcept>
 
 std::exception CreateException(const char* condition, const char* msg) {
-    static std::string container;  // Exception data _must_ be stored in a static string!
     std::ostringstream oss;
     oss << std::endl;
     oss << "Error: " << condition << " failed: " << msg << " at: " << std::endl;
 
-    container = oss.str();
-    return std::exception(container.c_str()); /* this is usually where you want a breakpoint. */
+    std::string container = oss.str();
+    return std::runtime_error(container); /* this is usually where you want a breakpoint. */
 }
 
 #endif
