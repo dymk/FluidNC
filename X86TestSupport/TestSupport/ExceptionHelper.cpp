@@ -207,10 +207,10 @@ std::exception CreateException(const char* condition, const char* msg) {
 }
 
 #else
-#include <exception>
-#include <string>
-#include <sstream>
-#include <stdexcept>
+#    include <exception>
+#    include <string>
+#    include <sstream>
+#    include <stdexcept>
 
 std::exception CreateException(const char* condition, const char* msg) {
     std::ostringstream oss;

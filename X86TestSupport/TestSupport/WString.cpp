@@ -3,11 +3,10 @@
 #include <iomanip>
 #include <sstream>
 
-
 #pragma warning(disable : 4996)  // itoa
 
 std::string String::ValueToString(int value, int base) {
-    char        buffer[100] = { 0 };
+    char buffer[100] = { 0 };
     snprintf(buffer, sizeof(buffer), "%d", value);
     return buffer;
 }

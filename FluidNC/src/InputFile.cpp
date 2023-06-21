@@ -71,19 +71,17 @@ Channel* InputFile::pollLine(char* line) {
             _progress = s.str();
         }
             return &allChannels;
-        case Error::Eof:
-        {
-            _progress = "";
+        case Error::Eof: {
+            _progress      = "";
             FluidPath path = this->fpath();
             _notifyf("File job done", "%s file job succeeded", path.c_str());
             log_msg(path.c_str() << " file job succeeded");
             allChannels.kill(this);
             return nullptr;
         }
-        default:
-        {
+        default: {
             FluidPath path = this->fpath();
-            _progress = "";
+            _progress      = "";
             log_error(static_cast<int>(err) << " (" << errorString(err) << ") in " << path.c_str() << " at line " << getLineNumber());
             allChannels.kill(this);
             return nullptr;
