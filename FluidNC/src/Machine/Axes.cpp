@@ -76,7 +76,7 @@ namespace Machine {
                 auto a = _axis[axis];
                 if (a != nullptr) {
                     for (size_t motor = 0; motor < Axis::MAX_MOTORS_PER_AXIS; motor++) {
-                        auto m = _axis[axis]->_motors[motor];
+                        auto& m = _axis[axis]->_motors[motor];
                         if (m) {
                             m->unblock();
                             if (m->_driver->set_homing_mode(isHoming)) {
@@ -173,7 +173,7 @@ namespace Machine {
             if (_axis[i] != nullptr && _axis[i]->hasMotor(driver)) {
                 for (int j = 0; j < Axis::MAX_MOTORS_PER_AXIS; ++j) {
                     auto m = _axis[i]->_motors[j];
-                    if (m && m->_driver == driver) {
+                    if (m && m->_driver.get() == driver) {
                         return j;
                     }
                 }

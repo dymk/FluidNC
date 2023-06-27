@@ -20,7 +20,8 @@
 namespace MotorDrivers {
 
     void TrinamicUartDriver::init() {
-        _uart = config->_uarts[_uart_num];
+        // TODO - don't take _uart ptr here, as it could dangle
+        _uart = config->_uarts[_uart_num].get();
         if (!_uart) {
             log_error("TMC2208: Missing uart" << _uart_num << "section");
             return;

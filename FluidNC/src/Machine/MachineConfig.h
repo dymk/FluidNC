@@ -28,6 +28,8 @@
 #include "Macros.h"
 
 #include <string_view>
+#include <memory>
+#include <array>
 
 namespace Machine {
     using ::Kinematics::Kinematics;
@@ -59,25 +61,25 @@ namespace Machine {
     public:
         MachineConfig() = default;
 
-        Axes*                 _axes           = nullptr;
-        Kinematics*           _kinematics     = nullptr;
-        SPIBus*               _spi            = nullptr;
-        I2CBus*               _i2c[MAX_N_I2C] = { nullptr };
-        I2SOBus*              _i2so           = nullptr;
-        Stepping*             _stepping       = nullptr;
-        CoolantControl*       _coolant        = nullptr;
-        Probe*                _probe          = nullptr;
-        Control*              _control        = nullptr;
-        UserOutputs*          _userOutputs    = nullptr;
-        SDCard*               _sdCard         = nullptr;
-        Macros*               _macros         = nullptr;
-        Start*                _start          = nullptr;
-        Parking*              _parking        = nullptr;
-        OLED*                 _oled           = nullptr;
-        Spindles::SpindleList _spindles;
+        std::unique_ptr<Axes>                          _axes;
+        std::unique_ptr<Kinematics>                    _kinematics;
+        std::unique_ptr<SPIBus>                        _spi;
+        std::array<std::unique_ptr<I2CBus>, MAX_N_I2C> _i2c;
+        std::unique_ptr<I2SOBus>                       _i2so;
+        std::unique_ptr<Stepping>                      _stepping;
+        std::unique_ptr<CoolantControl>                _coolant;
+        std::unique_ptr<Probe>                         _probe;
+        std::unique_ptr<Control>                       _control;
+        std::unique_ptr<UserOutputs>                   _userOutputs;
+        std::unique_ptr<SDCard>                        _sdCard;
+        std::unique_ptr<Macros>                        _macros;
+        std::unique_ptr<Start>                         _start;
+        std::unique_ptr<Parking>                       _parking;
+        std::unique_ptr<OLED>                          _oled;
+        Spindles::SpindleList                          _spindles;
 
-        UartChannel* _uart_channels[MAX_N_UARTS] = { nullptr };
-        Uart*        _uarts[MAX_N_UARTS]         = { nullptr };
+        std::array<std::unique_ptr<UartChannel>, MAX_N_UARTS> _uart_channels;
+        std::array<std::unique_ptr<Uart>, MAX_N_UARTS>        _uarts;
 
         float _arcTolerance      = 0.002f;
         float _junctionDeviation = 0.01f;

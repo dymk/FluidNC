@@ -17,7 +17,7 @@
 
 namespace Spindles {
     class Spindle;
-    using SpindleList = std::vector<Spindle*>;
+    using SpindleList = std::vector<std::unique_ptr<Spindle>>;
 
     // This is the base class. Do not use this as your spindle
     class Spindle : public Configuration::Configurable {
@@ -37,7 +37,7 @@ namespace Spindles {
         void     shelfSpeeds(SpindleSpeed min, SpindleSpeed max);
         void     linearSpeeds(SpindleSpeed maxSpeed, float maxPercent);
 
-        static void switchSpindle(uint32_t new_tool, SpindleList spindles, Spindle*& spindle);
+        static void switchSpindle(uint32_t new_tool, SpindleList const& spindles, Spindle*& spindle);
 
         void         spindleDelay(SpindleState state, SpindleSpeed speed);
         virtual void init() = 0;  // not in constructor because this also gets called when $$ settings change

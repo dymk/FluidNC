@@ -47,7 +47,7 @@ static bool auth_failed(Word* w, const char* value, WebUI::AuthenticationLevel a
             if (!value) {                              // User can read anything
                 return false;                          // No read is a User auth fail
             }
-            return permissions == WA;  // User cannot write WA
+            return permissions == WA;                  // User cannot write WA
         default:
             return true;
     }
@@ -136,7 +136,7 @@ void settings_restore(uint8_t restore_flag) {
         for (Setting* s = Setting::List; s; s = s->next()) {
             if (!s->getDescription()) {
                 const char* name = s->getName();
-                if (restore_startup) {  // all settings get restored
+                if (restore_startup) {                                                      // all settings get restored
                     s->setDefault();
                 } else if ((strcmp(name, "Line0") != 0) && (strcmp(name, "Line1") != 0)) {  // non startup settings get restored
                     s->setDefault();
@@ -570,7 +570,7 @@ static Error motor_control(const char* value, bool disable) {
         return Error::Ok;
     }
 
-    auto axes = config->_axes;
+    auto& axes = config->_axes;
 
     if (axes->_sharedStepperDisable.defined()) {
         log_error("Cannot " << (disable ? "dis" : "en") << "able individual axes with a shared disable pin");

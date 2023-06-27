@@ -11,6 +11,7 @@
 
 #include <IPAddress.h>
 #include <string>
+#include <memory>
 
 namespace Configuration {
     class Configurable;
@@ -57,16 +58,30 @@ namespace Configuration {
 
         virtual HandlerType handlerType() = 0;
 
-        template <typename T, typename... U>
-        void section(const char* name, T*& value, U... args) {
+        template <typename T, typename... Args>
+        void section(const char* name, std::unique_ptr<T>& value, Args&&... args) {
             if (handlerType() == HandlerType::Parser) {
                 // For Parser, matchesUninitialized(name) resolves to _parser.is(name)
                 if (matchesUninitialized(name)) {
                     Assert(value == nullptr, "Duplicate section %s", name);
-                    if (value == nullptr) {
-                        value = new T(args...);
-                        enterSection(name, value);
-                    }
+                    value = std::make_unique<T>(std::forward<Args>(args)...);
+                    enterSection(name, value.get());
+                }
+            } else {
+                if (value != nullptr) {
+                    enterSection(name, value.get());
+                }
+            }
+        }
+
+        template <typename T, typename... Args>
+        void section(const char* name, T*& value, Args&&... args) {
+            if (handlerType() == HandlerType::Parser) {
+                // For Parser, matchesUninitialized(name) resolves to _parser.is(name)
+                if (matchesUninitialized(name)) {
+                    Assert(value == nullptr, "Duplicate section %s", name);
+                    value = new T(std::forward<Args>(args)...);
+                    enterSection(name, value);
                 }
             } else {
                 if (value != nullptr) {

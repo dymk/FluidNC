@@ -58,11 +58,11 @@ namespace Kinematics {
     }
 
     void Cartesian::releaseMotors(AxisMask axisMask, MotorMask motors) {
-        auto axes   = config->_axes;
-        auto n_axis = axes->_numberAxis;
+        auto& axes   = *config->_axes;
+        auto  n_axis = axes._numberAxis;
         for (int axis = 0; axis < n_axis; axis++) {
             if (bitnum_is_true(axisMask, axis)) {
-                auto paxis = axes->_axis[axis];
+                auto paxis = axes._axis[axis];
                 if (bitnum_is_true(motors, Machine::Axes::motor_bit(axis, 0))) {
                     paxis->_motors[0]->unlimit();
                 }

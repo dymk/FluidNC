@@ -263,7 +263,7 @@ namespace Spindles {
         if (_uart) {
             _uart->begin();
         } else {
-            _uart = config->_uarts[_uart_num];
+            _uart = config->_uarts[_uart_num].get();
             if (!_uart) {
                 log_error("VFDSpindle: Missing uart" << _uart_num << "section");
                 return;
@@ -283,7 +283,7 @@ namespace Spindles {
         _current_state = SpindleState::Disable;
 
         // Initialization is complete, so now it's okay to run the queue task:
-        if (!vfd_cmd_queue) {  // init can happen many times, we only want to start one task
+        if (!vfd_cmd_queue) {                             // init can happen many times, we only want to start one task
             vfd_cmd_queue = xQueueCreate(VFD_RS485_QUEUE_SIZE, sizeof(VFDaction));
             xTaskCreatePinnedToCore(vfd_cmd_task,         // task
                                     "vfd_cmdTaskHandle",  // name for task
@@ -291,7 +291,7 @@ namespace Spindles {
                                     this,                 // parameters
                                     1,                    // priority
                                     &vfd_cmdTaskHandle,
-                                    SUPPORT_TASK_CORE  // core
+                                    SUPPORT_TASK_CORE     // core
             );
         }
 
@@ -300,7 +300,9 @@ namespace Spindles {
         set_mode(SpindleState::Disable, true);
     }
 
-    void VFD::config_message() { _uart->config_message(name(), " Spindle "); }
+    void VFD::config_message() {
+        _uart->config_message(name(), " Spindle ");
+    }
 
     void VFD::setState(SpindleState state, SpindleSpeed speed) {
         log_debug("VFD setState:" << uint8_t(state) << " SpindleSpeed:" << speed);
@@ -462,14 +464,14 @@ namespace Spindles {
     uint16_t VFD::ModRTU_CRC(uint8_t* buf, int msg_len) {
         uint16_t crc = 0xFFFF;
         for (int pos = 0; pos < msg_len; pos++) {
-            crc ^= uint16_t(buf[pos]);  // XOR byte into least sig. byte of crc.
+            crc ^= uint16_t(buf[pos]);      // XOR byte into least sig. byte of crc.
 
             for (int i = 8; i != 0; i--) {  // Loop over each bit
                 if ((crc & 0x0001) != 0) {  // If the LSB is set
                     crc >>= 1;              // Shift right and XOR 0xA001
                     crc ^= 0xA001;
-                } else {        // Else LSB is not set
-                    crc >>= 1;  // Just shift right
+                } else {                    // Else LSB is not set
+                    crc >>= 1;              // Just shift right
                 }
             }
         }

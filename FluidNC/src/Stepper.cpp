@@ -251,7 +251,7 @@ bool IRAM_ATTR Stepper::pulse_func() {
     // Check probing state.
     if (probeState == ProbeState::Active && config->_probe->tripped()) {
         probeState = ProbeState::Off;
-        auto axes  = config->_axes;
+        auto& axes  = config->_axes;
         for (int axis = 0; axis < n_axis; axis++) {
             auto m            = axes->_axis[axis]->_motors[0];
             probe_steps[axis] = m ? m->_steps : 0;

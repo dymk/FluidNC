@@ -82,69 +82,69 @@ namespace Machine {
     void MachineConfig::afterParse() {
         if (_axes == nullptr) {
             log_info("Axes: using defaults");
-            _axes = new Axes();
+            _axes = std::make_unique<Axes>();
         }
 
         if (_coolant == nullptr) {
-            _coolant = new CoolantControl();
+            _coolant = std::make_unique<CoolantControl>();
         }
 
         if (_kinematics == nullptr) {
-            _kinematics = new Kinematics();
+            _kinematics = std::make_unique<Kinematics>();
         }
 
         if (_probe == nullptr) {
-            _probe = new Probe();
+            _probe = std::make_unique<Probe>();
         }
 
         if (_userOutputs == nullptr) {
-            _userOutputs = new UserOutputs();
+            _userOutputs = std::make_unique<UserOutputs>();
         }
 
         if (_sdCard == nullptr) {
-            _sdCard = new SDCard();
+            _sdCard = std::make_unique<SDCard>();
         }
 
         if (_spi == nullptr) {
-            _spi = new SPIBus();
+            _spi = std::make_unique<SPIBus>();
         }
 
         if (_stepping == nullptr) {
-            _stepping = new Stepping();
+            _stepping = std::make_unique<Stepping>();
         }
 
         // We do not auto-create an I2SO bus config node
         // Only if an i2so section is present will config->_i2so be non-null
 
         if (_control == nullptr) {
-            _control = new Control();
+            _control = std::unique_ptr<Control>();
         }
 
         if (_start == nullptr) {
-            _start = new Start();
+            _start = std::make_unique<Start>();
         }
 
         if (_parking == nullptr) {
-            _parking = new Parking();
+            _parking = std::make_unique<Parking>();
         }
 
         if (_spindles.size() == 0) {
-            _spindles.push_back(new Spindles::Null());
+            _spindles.push_back(std::make_unique<Spindles::Null>());
         }
 
         // Precaution in case the full spindle initialization does not happen
         // due to a configuration error
-        spindle = _spindles[0];
+        spindle = _spindles[0].get();
 
         uint32_t next_tool = 100;
-        for (auto s : _spindles) {
+        for (auto& s : _spindles) {
             if (s->_tool == -1) {
                 s->_tool = next_tool++;
             }
         }
 
         if (_macros == nullptr) {
-            _macros = new Macros();
+            _macros = std::make_unique<Macros>();
         }
     }
 
@@ -261,14 +261,5 @@ namespace Machine {
         return successful;
     }
 
-    MachineConfig::~MachineConfig() {
-        delete _axes;
-        delete _i2so;
-        delete _coolant;
-        delete _probe;
-        delete _sdCard;
-        delete _spi;
-        delete _control;
-        delete _macros;
-    }
+    MachineConfig::~MachineConfig() {}
 }

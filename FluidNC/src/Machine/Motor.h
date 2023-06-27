@@ -6,10 +6,13 @@
 
 #include "../Configuration/Configurable.h"
 #include "LimitPin.h"
+#include "../Motors/MotorDriver.h"
 
-namespace MotorDrivers {
-    class MotorDriver;
-}
+#include <memory>
+
+// namespace MotorDrivers {
+//     class MotorDriver;
+// }
 
 namespace Machine {
     class Endstops;
@@ -17,9 +20,9 @@ namespace Machine {
 
 namespace Machine {
     class Motor : public Configuration::Configurable {
-        LimitPin* _negLimitPin;
-        LimitPin* _posLimitPin;
-        LimitPin* _allLimitPin;
+        std::unique_ptr<LimitPin> _negLimitPin;
+        std::unique_ptr<LimitPin> _posLimitPin;
+        std::unique_ptr<LimitPin> _allLimitPin;
 
         int _axis;
         int _motorNum;
@@ -27,8 +30,8 @@ namespace Machine {
     public:
         Motor(int axis, int motorNum) : _axis(axis), _motorNum(motorNum) {}
 
-        MotorDrivers::MotorDriver* _driver  = nullptr;
-        float                      _pulloff = 1.0f;  // mm
+        std::unique_ptr<MotorDrivers::MotorDriver> _driver;
+        float                                      _pulloff = 1.0f;  // mm
 
         Pin  _negPin;
         Pin  _posPin;

@@ -14,12 +14,12 @@ Spindles::Spindle* spindle = nullptr;
 namespace Spindles {
     // ========================= Spindle ==================================
 
-    void Spindle::switchSpindle(uint32_t new_tool, SpindleList spindles, Spindle*& spindle) {
+    void Spindle::switchSpindle(uint32_t new_tool, SpindleList const& spindles, Spindle*& spindle) {
         // Find the spindle whose tool number is closest to and below the new tool number
         Spindle* candidate = nullptr;
-        for (auto s : spindles) {
+        for (auto const& s : spindles) {
             if (s->_tool <= new_tool && (!candidate || candidate->_tool < s->_tool)) {
-                candidate = s;
+                candidate = s.get();
             }
         }
         if (candidate) {
@@ -35,7 +35,7 @@ namespace Spindles {
                     log_error("No spindles are defined");
                     return;
                 }
-                spindle = spindles[0];
+                spindle = spindles[0].get();
             }
         }
         log_info("Using spindle " << spindle->name());

@@ -131,7 +131,7 @@ void setup() {
                 // If there is an axis with homing configured, enter Alarm state on startup
                 sys.state = State::Alarm;
             }
-            for (auto s : config->_spindles) {
+            for (auto& s : config->_spindles) {
                 s->init();
             }
             Spindles::Spindle::switchSpindle(0, config->_spindles, spindle);
@@ -169,7 +169,7 @@ static void reset_variables() {
             spindle->stop();
             report_ovr_counter = 0;  // Set to report change immediately
         }
-        Stepper::reset();  // Clear stepper subsystem variables
+        Stepper::reset();            // Clear stepper subsystem variables
     }
 
     // Sync cleared gcode and planner positions to current system position.

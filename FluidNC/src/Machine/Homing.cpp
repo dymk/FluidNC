@@ -1,10 +1,10 @@
 #include "Homing.h"
 
-#include "../MotionControl.h"  // mc_reset
-#include "../System.h"         // sys.*
-#include "../Stepper.h"        // st_wake
-#include "../Protocol.h"       // protocol_handle_events
-#include "../Limits.h"         // ambiguousLimit
+#include "../MotionControl.h"          // mc_reset
+#include "../System.h"                 // sys.*
+#include "../Stepper.h"                // st_wake
+#include "../Protocol.h"               // protocol_handle_events
+#include "../Limits.h"                 // ambiguousLimit
 #include "../Machine/Axes.h"
 #include "../Machine/MachineConfig.h"  // config
 
@@ -67,7 +67,9 @@ namespace Machine {
         protocol_send_event(&cycleStartEvent);
     }
 
-    static MotorMask limited() { return Machine::Axes::posLimitMask | Machine::Axes::negLimitMask; }
+    static MotorMask limited() {
+        return Machine::Axes::posLimitMask | Machine::Axes::negLimitMask;
+    }
 
     void Homing::cycleStop() {
         log_debug("CycleStop " << phaseName(_phase));
@@ -119,8 +121,8 @@ namespace Machine {
 
         //        log_debug("Cartesian homing " << int(axisMask) << " motors " << int(motors));
 
-        auto axes   = config->_axes;
-        auto n_axis = axes->_numberAxis;
+        auto& axes   = config->_axes;
+        auto  n_axis = axes->_numberAxis;
 
         float rates[n_axis]    = { 0 };
         float distance[n_axis] = { 0 };
@@ -351,7 +353,7 @@ namespace Machine {
     }
 
     void Homing::fail(ExecAlarm alarm) {
-        Stepper::reset();  // Stop moving
+        Stepper::reset();                                   // Stop moving
         rtAlarm = alarm;
         config->_axes->set_homing_mode(_cycleAxes, false);  // tell motors homing is done...failed
         config->_axes->set_disable(config->_stepping->_idleMsecs != 255);
@@ -364,8 +366,8 @@ namespace Machine {
             return false;
         }
 
-        auto axes   = config->_axes;
-        auto n_axis = axes->_numberAxis;
+        auto& axes   = config->_axes;
+        auto  n_axis = axes->_numberAxis;
         for (int axis = 0; axis < n_axis; axis++) {
             if (bitnum_is_false(squaredAxes, axis)) {
                 continue;
@@ -381,8 +383,8 @@ namespace Machine {
     }
 
     void Homing::set_mpos() {
-        auto axes   = config->_axes;
-        auto n_axis = axes->_numberAxis;
+        auto& axes   = config->_axes;
+        auto  n_axis = axes->_numberAxis;
 
         float* mpos = get_mpos();
 

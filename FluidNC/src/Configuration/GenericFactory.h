@@ -18,7 +18,7 @@ namespace Configuration {
 
         GenericFactory() = default;
 
-        GenericFactory(const GenericFactory&) = delete;
+        GenericFactory(const GenericFactory&)            = delete;
         GenericFactory& operator=(const GenericFactory&) = delete;
 
         class BuilderBase {
@@ -27,11 +27,11 @@ namespace Configuration {
         public:
             BuilderBase(const char* name) : name_(name) {}
 
-            BuilderBase(const BuilderBase& o) = delete;
+            BuilderBase(const BuilderBase& o)            = delete;
             BuilderBase& operator=(const BuilderBase& o) = delete;
 
-            virtual BaseType* create() const = 0;
-            const char*       name() const { return name_; }
+            virtual std::unique_ptr<BaseType> create() const = 0;
+            const char*                       name() const { return name_; }
 
             virtual ~BuilderBase() = default;
         };
@@ -46,10 +46,10 @@ namespace Configuration {
         public:
             InstanceBuilder(const char* name) : BuilderBase(name) { instance().registerBuilder(this); }
 
-            BaseType* create() const override { return new DerivedType(); }
+            std::unique_ptr<BaseType> create() const override { return std::make_unique<DerivedType>(); }
         };
 
-        static void factory(Configuration::HandlerBase& handler, BaseType*& inst) {
+        static void factory(Configuration::HandlerBase& handler, std::unique_ptr<BaseType>& inst) {
             if (inst == nullptr) {
                 for (auto it : instance().builders_) {
                     if (handler.matchesUninitialized(it->name())) {
@@ -60,23 +60,23 @@ namespace Configuration {
                     }
                 }
             } else {
-                handler.enterSection(inst->name(), inst);
+                handler.enterSection(inst->name(), inst.get());
             }
         }
-        static void factory(Configuration::HandlerBase& handler, std::vector<BaseType*>& inst) {
-            if (handler.handlerType() == HandlerType::Parser) {
-                for (auto it : instance().builders_) {
-                    if (handler.matchesUninitialized(it->name())) {
-                        auto product = it->create();
-                        inst.push_back(product);
-                        handler.enterFactory(it->name(), *product);
 
+        static void factory(Configuration::HandlerBase& handler, std::vector<std::unique_ptr<BaseType>>& insts) {
+            if (handler.handlerType() == HandlerType::Parser) {
+                for (auto builder : instance().builders_) {
+                    if (handler.matchesUninitialized(builder->name())) {
+                        auto inst = builder->create();
+                        handler.enterFactory(builder->name(), *inst);
+                        insts.push_back(std::move(inst));
                         return;
                     }
                 }
             } else {
-                for (auto it : inst) {
-                    handler.enterSection(it->name(), it);
+                for (auto& inst : insts) {
+                    handler.enterSection(inst->name(), inst.get());
                 }
             }
         }

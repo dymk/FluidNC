@@ -10,7 +10,7 @@ UartChannel::UartChannel(bool addCR) : Channel("uart", addCR) {
 }
 
 void UartChannel::init() {
-    auto uart = config->_uarts[_uart_num];
+    auto uart = config->_uarts[_uart_num].get();
     if (uart) {
         init(uart);
     } else {

@@ -21,7 +21,7 @@ namespace Machine {
 
     void Motor::afterParse() {
         if (_driver == nullptr) {
-            _driver = new MotorDrivers::Nullmotor();
+            _driver = std::make_unique<MotorDrivers::Nullmotor>();
         }
     }
 
@@ -31,9 +31,9 @@ namespace Machine {
         }
         _driver->init();
 
-        _negLimitPin = new LimitPin(_negPin, _axis, _motorNum, -1, _hardLimits, _limited);
-        _posLimitPin = new LimitPin(_posPin, _axis, _motorNum, 1, _hardLimits, _limited);
-        _allLimitPin = new LimitPin(_allPin, _axis, _motorNum, 0, _hardLimits, _limited);
+        _negLimitPin = std::make_unique<LimitPin>(_negPin, _axis, _motorNum, -1, _hardLimits, _limited);
+        _posLimitPin = std::make_unique<LimitPin>(_posPin, _axis, _motorNum, 1, _hardLimits, _limited);
+        _allLimitPin = std::make_unique<LimitPin>(_allPin, _axis, _motorNum, 0, _hardLimits, _limited);
 
         _negLimitPin->init();
         _posLimitPin->init();
@@ -49,7 +49,9 @@ namespace Machine {
     }
 
     // true if there is at least one switch for this motor
-    bool Motor::hasSwitches() { return (_negPin.defined() || _posPin.defined() || _allPin.defined()); }
+    bool Motor::hasSwitches() {
+        return (_negPin.defined() || _posPin.defined() || _allPin.defined());
+    }
 
     // Used when a single switch input is wired to 2 axes.
     void Motor::makeDualSwitches() {
@@ -65,7 +67,9 @@ namespace Machine {
         _allLimitPin->setExtraMotorLimit(axis, _motorNum);
     }
 
-    bool Motor::isReal() { return _driver->isReal(); }
+    bool Motor::isReal() {
+        return _driver->isReal();
+    }
 
     void IRAM_ATTR Motor::step(bool reverse) {
         // Skip steps based on limit pins
@@ -78,7 +82,9 @@ namespace Machine {
         _steps += reverse ? -1 : 1;
     }
 
-    void IRAM_ATTR Motor::unstep() { _driver->unstep(); }
+    void IRAM_ATTR Motor::unstep() {
+        _driver->unstep();
+    }
 
-    Motor::~Motor() { delete _driver; }
+    Motor::~Motor() {}
 }

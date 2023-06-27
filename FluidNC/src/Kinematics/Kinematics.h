@@ -34,8 +34,8 @@ namespace Kinematics {
 
     class Kinematics : public Configuration::Configurable {
     public:
-        Kinematics() {}
-        ~Kinematics();
+        Kinematics() = default;
+        ~Kinematics() = default;
 
         // Configuration system helpers:
         void group(Configuration::HandlerBase& handler) override;
@@ -53,7 +53,7 @@ namespace Kinematics {
         bool limitReached(AxisMask& axisMask, MotorMask& motors, MotorMask limited);
 
     private:
-        ::Kinematics::KinematicSystem* _system = nullptr;
+        std::unique_ptr<::Kinematics::KinematicSystem> _system;
     };
 
     class KinematicSystem : public Configuration::Configurable {

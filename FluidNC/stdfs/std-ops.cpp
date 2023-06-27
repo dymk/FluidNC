@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <limits.h>  // PATH_MAX
+#include <limits.h>     // PATH_MAX
 #ifdef _GLIBCXX_HAVE_FCNTL_H
 #    include <fcntl.h>  // AT_FDCWD, AT_SYMLINK_NOFOLLOW
 #endif
@@ -85,9 +85,13 @@ fs::path fs::absolute(const path& p, error_code& ec) {
 }
 namespace {
 #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
-    inline bool is_dot(wchar_t c) { return c == L'.'; }
+    inline bool is_dot(wchar_t c) {
+        return c == L'.';
+    }
 #else
-    inline bool is_dot(char c) { return c == '.'; }
+    inline bool is_dot(char c) {
+        return c == '.';
+    }
 #endif
     inline bool is_dot(const fs::path& path) {
         const auto& filename = path.native();
@@ -188,7 +192,9 @@ void fs::copy(const path& from, const path& to, copy_options options) {
 }
 namespace std::filesystem {
     // Need this as there's no 'perm_options::none' enumerator.
-    inline bool is_set(fs::perm_options obj, fs::perm_options bits) { return (obj & bits) != fs::perm_options {}; }
+    inline bool is_set(fs::perm_options obj, fs::perm_options bits) {
+        return (obj & bits) != fs::perm_options {};
+    }
 }
 #ifdef _GLIBCXX_HAVE_SYS_STAT_H
 #    ifdef NEED_DO_COPY_FILE
@@ -323,8 +329,8 @@ bool fs::do_copy_file(
     return true;
 #        endif  // _GLIBCXX_USE_SENDFILE
 }
-#    endif  // NEED_DO_COPY_FILE
-#endif      // _GLIBCXX_HAVE_SYS_STAT_H
+#    endif      // NEED_DO_COPY_FILE
+#endif          // _GLIBCXX_HAVE_SYS_STAT_H
 void fs::copy(const path& from, const path& to, copy_options options, error_code& ec) {
     const bool  skip_symlinks   = is_set(options, copy_options::skip_symlinks);
     const bool  create_symlinks = is_set(options, copy_options::create_symlinks);
@@ -1084,7 +1090,7 @@ fs::path fs::weakly_canonical(const path& p) {
     while (iter != end) {
         tmp = result / *iter;
         if (exists(status(tmp)))
-            swap(result, tmp);
+            std::swap(result, tmp);
         else
             break;
         ++iter;
@@ -1113,7 +1119,7 @@ fs::path fs::weakly_canonical(const path& p, error_code& ec) {
         tmp = result / *iter;
         st  = status(tmp, ec);
         if (exists(st))
-            swap(result, tmp);
+            std::swap(result, tmp);
         else {
             if (status_known(st))
                 ec.clear();

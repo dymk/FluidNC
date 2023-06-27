@@ -75,7 +75,7 @@ namespace Machine {
     bool Axis::hasMotor(const MotorDrivers::MotorDriver* const driver) const {
         for (size_t i = 0; i < MAX_MOTORS_PER_AXIS; i++) {
             auto m = _motors[i];
-            if (m && m->_driver == driver) {
+            if (m && m->_driver.get() == driver) {
                 return true;
             }
         }
@@ -83,7 +83,9 @@ namespace Machine {
     }
 
     // Does this axis have 2 motors?
-    bool Axis::hasDualMotor() { return _motors[0] && _motors[0]->isReal() && _motors[1] && _motors[1]->isReal(); }
+    bool Axis::hasDualMotor() {
+        return _motors[0] && _motors[0]->isReal() && _motors[1] && _motors[1]->isReal();
+    }
 
     // How many motors have switches defined?
     int Axis::motorsWithSwitches() {

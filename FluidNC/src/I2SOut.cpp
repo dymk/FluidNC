@@ -522,7 +522,7 @@ static void i2sOutTask(void* parameter) {
             i2s_clear_dma_buffer(dma_desc, 0);  // Essentially, no clearing is required. I'll make sure I know when I've written something.
             o_dma.rw_pos = 0;                   // If someone calls i2s_out_push_sample, make sure there is no buffer overflow
         }
-        I2S_OUT_PULSER_EXIT_CRITICAL();  // Unlock pulser status
+        I2S_OUT_PULSER_EXIT_CRITICAL();         // Unlock pulser status
 
         static UBaseType_t uxHighWaterMark = 0;
 #    ifdef DEBUG_TASK_STACK
@@ -818,15 +818,15 @@ int i2s_out_init(i2s_out_init_t& init_param) {
 #    endif
     I2S0.conf.tx_mono                 = 0;   // Set this bit to enable transmitter’s mono mode in PCM standard mode.
 
-    I2S0.conf_chan.rx_chan_mod = 1;  // 1: right+right
+    I2S0.conf_chan.rx_chan_mod = 1;          // 1: right+right
     I2S0.conf.rx_mono          = 0;
 
     I2S0.fifo_conf.dscr_en = 1;  //connect DMA to fifo
     I2S0.conf.tx_start     = 0;
     I2S0.conf.rx_start     = 0;
 
-    I2S0.conf.tx_msb_right   = 1;  // Set this bit to place right-channel data at the MSB in the transmit FIFO.
-    I2S0.conf.tx_right_first = 0;  // Setting this bit allows the right-channel data to be sent first.
+    I2S0.conf.tx_msb_right   = 1;             // Set this bit to place right-channel data at the MSB in the transmit FIFO.
+    I2S0.conf.tx_right_first = 0;             // Setting this bit allows the right-channel data to be sent first.
 
     I2S0.conf.tx_slave_mod              = 0;  // Master
     I2S0.fifo_conf.tx_fifo_mod_force_en = 1;  //The bit should always be set to 1.
@@ -917,7 +917,7 @@ int i2s_out_init(i2s_out_init_t& init_param) {
   return -1 ... already initialized
 */
 int i2s_out_init() {
-    auto i2so = config->_i2so;
+    auto& i2so = config->_i2so;
     if (!i2so) {
         return -1;
     }

@@ -11,8 +11,8 @@
 #include "Config.h"                 // MAX_N_AXIS
 #include "Machine/MachineConfig.h"  // config
 
-#include <cstring>  // memset
-#include <cmath>    // roundf
+#include <cstring>                  // memset
+#include <cmath>                    // roundf
 
 // Declare system global variable structure
 system_t sys;
@@ -21,7 +21,7 @@ int32_t  probe_steps[MAX_N_AXIS];  // Last probe position in steps.
 void system_reset() {
     // Reset system variables.
     State prior_state = sys.state;
-    memset(&sys, 0, sizeof(system_t));  // Clear system struct variable.
+    memset(&sys, 0, sizeof(system_t));                      // Clear system struct variable.
     sys.state             = prior_state;
     sys.f_override        = FeedOverride::Default;          // Set to 100%
     sys.r_override        = RapidOverride::Default;         // Set to 100%
@@ -40,8 +40,8 @@ int32_t mpos_to_steps(float mpos, size_t axis) {
 
 void motor_steps_to_mpos(float* position, int32_t* steps) {
     float motor_mpos[MAX_N_AXIS];
-    auto  a      = config->_axes;
-    auto  n_axis = a ? a->_numberAxis : 0;
+    auto& axes   = config->_axes;
+    auto  n_axis = axes ? axes->_numberAxis : 0;
     for (size_t idx = 0; idx < n_axis; idx++) {
         motor_mpos[idx] = steps_to_mpos(steps[idx], idx);
     }
@@ -75,8 +75,8 @@ int32_t get_axis_motor_steps(size_t axis) {
 int32_t* get_motor_steps() {
     static int32_t motor_steps[MAX_N_AXIS];
 
-    auto axes   = config->_axes;
-    auto n_axis = axes->_numberAxis;
+    auto& axes   = config->_axes;
+    auto  n_axis = axes->_numberAxis;
     for (size_t axis = 0; axis < n_axis; axis++) {
         auto m            = axes->_axis[axis]->_motors[0];
         motor_steps[axis] = m ? m->_steps : 0;

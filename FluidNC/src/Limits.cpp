@@ -56,8 +56,8 @@ bool soft_limit = false;
 
 // Constrain the coordinates to stay within the soft limit envelope
 void constrainToSoftLimits(float* cartesian) {
-    auto axes   = config->_axes;
-    auto n_axis = config->_axes->_numberAxis;
+    auto& axes   = config->_axes;
+    auto  n_axis = config->_axes->_numberAxis;
 
     float*    current_position = get_mpos();
     MotorMask lim_pin_state    = limits_get_state();
@@ -119,8 +119,8 @@ void constrainToSoftLimits(float* cartesian) {
 void limits_soft_check(float* cartesian) {
     bool limit_error = false;
 
-    auto axes   = config->_axes;
-    auto n_axis = config->_axes->_numberAxis;
+    auto& axes   = config->_axes;
+    auto  n_axis = config->_axes->_numberAxis;
 
     for (int axis = 0; axis < n_axis; axis++) {
         if (axes->_axis[axis]->_softLimits && (cartesian[axis] < limitsMinPosition(axis) || cartesian[axis] > limitsMaxPosition(axis))) {
